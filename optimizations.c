@@ -19,30 +19,33 @@ void naive(uint64_t* restrict result,
 	}
 }
 
-/*
+
 
 void openmp(uint64_t* restrict result,
 		const uint16_t* restrict matrix1, const uint16_t* restrict matrix2) {
-	memset(result, 0, (WIDTH1 + WIDTH2 - 1)*(HEIGHT1 + HEIGHT2 - 1)*sizeof(uint64_t));
+	memset(result, 0, WIDTH2*HEIGHT2*sizeof(uint64_t));
 	#pragma omp parallel for
-	for (int i = 0; i < WIDTH; i++)
+	for (int i = 0; i < WIDTH2; i++)
 	{
-		for (int k = 0; k < WIDTH; k++)
+		for (int m = 0; m < WIDTH1; m++)
 		{
-			double t = matrix1[i*WIDTH+k];
-			for (int j = 0; j < HEIGHT; j++)
-			{
-				result[i*WIDTH+j] += t*matrix2[k*WIDTH+j];
-			}
+            for (int n = 0; n < HEIGHT1; n++)
+            {
+                uint64_t t = matrix1[m*WIDTH1+n];
+                for (int j = 0; j < HEIGHT2; j++)
+                {
+                    result[i*WIDTH2+j] += t*matrix2[(i-m)*WIDTH2+(j-n)];
+                }
+            }
 		}
 	}
 }
 
-
+/*
 
 void simd(uint64_t* restrict result,
 		const uint16_t* restrict matrix1, const uint16_t* restrict matrix2) {
-	memset(result, 0, (WIDTH1 + WIDTH2 - 1)*(HEIGHT1 + HEIGHT2 - 1)*sizeof(uint64_t));
+	memset(result, 0, WIDTH2*HEIGHT2*sizeof(uint64_t));
 	for (int i = 0; i < WIDTH; i++)
 	{
 		for (int k = 0; k < WIDTH; k++)
@@ -60,7 +63,7 @@ void simd(uint64_t* restrict result,
 
 void cacheBlock(uint64_t* restrict result,
 		const uint16_t* restrict matrix1, const uint16_t* restrict matrix2) {
-	memset(result, 0, (WIDTH1 + WIDTH2 - 1)*(HEIGHT1 + HEIGHT2 - 1)*sizeof(uint64_t));
+	memset(result, 0, WIDTH2*HEIGHT2*sizeof(uint64_t));
 	const int BLOCK1 = 512;
 	for (int kk = 0; kk < WIDTH; kk+=BLOCK1) {
 		for (int i = 0; i < WIDTH; i++)
@@ -79,7 +82,7 @@ void cacheBlock(uint64_t* restrict result,
 
 void loopUnroll(uint64_t* restrict result,
 		const uint16_t* restrict matrix1, const uint16_t* restrict matrix2) {
-	memset(result, 0, (WIDTH1 + WIDTH2 - 1)*(HEIGHT1 + HEIGHT2 - 1)*sizeof(uint64_t));
+	memset(result, 0, WIDTH2*HEIGHT2*sizeof(uint64_t));
 	for (int i = 0; i < WIDTH; i++)
 	{
 		double* dest = result + i*WIDTH;
@@ -129,7 +132,7 @@ void loopUnroll(uint64_t* restrict result,
 void registerBlock(uint64_t* restrict result,
 		const uint16_t* restrict matrix1, const uint16_t* restrict matrix2) {
 
-	memset(result, 0, (WIDTH1 + WIDTH2 - 1)*(HEIGHT1 + HEIGHT2 - 1)*sizeof(uint64_t));
+	memset(result, 0, WIDTH2*HEIGHT2*sizeof(uint64_t));
 	for (int i = 0; i < WIDTH; i++)
 	{
 		const double* mat1 = matrix1+i*WIDTH;
@@ -174,7 +177,7 @@ void registerBlock(uint64_t* restrict result,
 void openmp_simd(uint64_t* restrict result,
 		const uint16_t* restrict matrix1, const uint16_t* restrict matrix2) {
 
-	memset(result, 0, (WIDTH1 + WIDTH2 - 1)*(HEIGHT1 + HEIGHT2 - 1)*sizeof(uint64_t));
+	memset(result, 0, WIDTH2*HEIGHT2*sizeof(uint64_t));
 
 	#pragma omp parallel for
 	for (int i = 0; i < WIDTH; i++)
@@ -196,7 +199,7 @@ void openmp_simd_cacheBlock(uint64_t* restrict result,
 		const uint16_t* restrict matrix1, const uint16_t* restrict matrix2) {
 
 	const int BLOCK = 512;
-	memset(result, 0, (WIDTH1 + WIDTH2 - 1)*(HEIGHT1 + HEIGHT2 - 1)*sizeof(uint64_t));
+	memset(result, 0, WIDTH2*HEIGHT2*sizeof(uint64_t));
 
 	#pragma omp parallel
 	{
@@ -223,7 +226,7 @@ void openmp_simd_cacheBlock_loopUnroll(uint64_t* restrict result,
 		const uint16_t* restrict matrix1, const uint16_t* restrict matrix2) {
 
 	const int BLOCK = 512;
-	memset(result, 0, (WIDTH1 + WIDTH2 - 1)*(HEIGHT1 + HEIGHT2 - 1)*sizeof(uint64_t));
+	memset(result, 0, WIDTH2*HEIGHT2*sizeof(uint64_t));
 
 	#pragma omp parallel
 	{
@@ -281,7 +284,7 @@ void openmp_simd_cacheBlock_loopUnroll_registerBlock(uint64_t* restrict result,
 		const uint16_t* restrict matrix1, const uint16_t* restrict matrix2) {
 
 	const int BLOCK = 512;
-	memset(result, 0, (WIDTH1 + WIDTH2 - 1)*(HEIGHT1 + HEIGHT2 - 1)*sizeof(uint64_t));
+	memset(result, 0, WIDTH2*HEIGHT2*sizeof(uint64_t));
 
 	#pragma omp parallel
 	{

@@ -39,8 +39,8 @@ int main(int argc, char *argv[])
 	int  errors[NUM_OF_OPTIMIZATIONS] = {}; /* Store whether the optimization has the correct result */
 
 	void (*functions[NUM_OF_OPTIMIZATIONS])(uint64_t*, const uint16_t*, const uint16_t*) ={ /* The optimization functions */
-		 naive,};
-		 //openmp,
+		 naive,
+		 openmp,};
 		 //simd,
 		 //cacheBlock,
 		 //loopUnroll,
@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
 		 "openmp & simd & cache block & loop unroll & register block"};
 
 	const int enables[NUM_OF_OPTIMIZATIONS] = { /* whether or not enable the test of some optimizations */
-		 ENABLE,};
+		 ENABLE,ENABLE};
 		 /*
 		 ENABLE,
 		 ENABLE,
@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
 
 	for (int i = 0; i < NUM_OF_EXPERIMENTS; i++) {
 
-		for (int j = 0; j < 1; j++) {
+		for (int j = 0; j < 2; j++) {
 			if (enables[j]) {
 				matrix1s[j] = _mm_malloc(WIDTH1*HEIGHT1*sizeof(uint16_t), 64);
 				matrix2s[j] = _mm_malloc((WIDTH2*HEIGHT2+PAD)*sizeof(uint16_t), 64);
