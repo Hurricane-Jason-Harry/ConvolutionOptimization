@@ -3,15 +3,21 @@
 void naive(double* restrict result,
 		const double* restrict matrix1, const double* restrict matrix2) {
 	memset(result, 0, WIDTH*HEIGHT*sizeof(double));
-	for (int i = 0; i < WIDTH; i++)
+	for (int i = 0; i < WIDTH1 + WIDTH2 - 1; i++)
 	{
-		for (int k = 0; k < WIDTH; k++)
+		for (int k = 0; k < WIDTH1; k++)
 		{
-			double t = matrix1[i*WIDTH+k];
-			for (int j = 0; j < HEIGHT; j++)
-			{
-				result[i*WIDTH+j] += t*matrix2[k*WIDTH+j];
-			}
+            for (int l = 0; l < WIDTH2; l++)
+            {
+            
+                
+            
+                double t = matrix1[k*WIDTH1+l];
+                for (int j = 0; j < HEIGHT1 + HEIGHT2 - 1; j++)
+                {
+                    result[i*(WIDTH1 + WIDth2 - 1)+j] += t*matrix2[(j-k)*(WIDTH1 + WIDTH2 - 1)+(j-l)];
+                }
+            }
 		}
 	}
 }
