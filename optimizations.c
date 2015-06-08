@@ -41,11 +41,12 @@ void openmp(uint64_t* restrict result,
 	}
 }
 
-/*
+
 
 void simd(uint64_t* restrict result,
 		const uint16_t* restrict matrix1, const uint16_t* restrict matrix2) {
 	memset(result, 0, WIDTH2*HEIGHT2*sizeof(uint64_t));
+	/*
 	for (int i = 0; i < WIDTH; i++)
 	{
 		for (int k = 0; k < WIDTH; k++)
@@ -58,28 +59,50 @@ void simd(uint64_t* restrict result,
 				_mm256_store_pd(result+i*WIDTH+j, r);
 			}
 		}
-	}
-}
-
-void cacheBlock(uint64_t* restrict result,
-		const uint16_t* restrict matrix1, const uint16_t* restrict matrix2) {
+	}*/
 	memset(result, 0, WIDTH2*HEIGHT2*sizeof(uint64_t));
-	const int BLOCK1 = 512;
-	for (int kk = 0; kk < WIDTH; kk+=BLOCK1) {
-		for (int i = 0; i < WIDTH; i++)
+	#pragma omp parallel for
+	for (int i = 0; i < WIDTH2; i++)
+	{
+		for (int m = 0; m < WIDTH1; m++)
 		{
-			for (int k = kk; k < kk+BLOCK1; k++)
-			{
-				double t = matrix1[i*WIDTH+k];
-				for (int j = 0; j < HEIGHT;j++) {
-					result[i*WIDTH+j] += t*matrix2[k*WIDTH+j];
-				}
-			}
+            for (int n = 0; n < HEIGHT1; n++)
+            {
+                uint64_t t = matrix1[m*WIDTH1+n];
+                for (int j = 0; j < HEIGHT2; j++)
+                {
+                    result[i*WIDTH2+j] += t*matrix2[(i-m)*WIDTH2+(j-n)];
+                }
+            }
 		}
 	}
 }
 
 
+
+void cacheBlock(uint64_t* restrict result,
+		const uint16_t* restrict matrix1, const uint16_t* restrict matrix2) {
+	memset(result, 0, WIDTH2*HEIGHT2*sizeof(uint64_t));
+	const int BLOCK = 512;
+	for (int jj = 0; jj < WIDTH2; jj+=BLOCK) {
+		for (int i = 0; i < WIDTH2; i++)
+		{
+			for (int m = 0; m < WIDTH1; m++)
+			{
+	            for (int n = 0; n < HEIGHT1; n++)
+	            {
+	                uint64_t t = matrix1[m*WIDTH1+n];
+	                for (int j = jj; j < jj+BLOCK; j++)
+	                {
+	                    result[i*WIDTH2+j] += t*matrix2[(i-m)*WIDTH2+(j-n)];
+	                }
+	            }
+			}
+		}
+	}
+}
+
+/*
 void loopUnroll(uint64_t* restrict result,
 		const uint16_t* restrict matrix1, const uint16_t* restrict matrix2) {
 	memset(result, 0, WIDTH2*HEIGHT2*sizeof(uint64_t));
