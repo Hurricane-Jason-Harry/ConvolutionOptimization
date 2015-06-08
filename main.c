@@ -31,24 +31,24 @@ int main(int argc, char *argv[])
 	srand (time(NULL));
 	omp_set_num_threads(8);
 
-	double* matrix1s[NUM_OF_OPTIMIZATIONS] = {};
-	double* matrix2s[NUM_OF_OPTIMIZATIONS] = {};
-	double* results[NUM_OF_OPTIMIZATIONS] = {}; /* Store the outputs of optimizations */
-	double* references[NUM_OF_OPTIMIZATIONS] = {};
+	uint16_t* matrix1s[NUM_OF_OPTIMIZATIONS] = {};
+	uint16_t* matrix2s[NUM_OF_OPTIMIZATIONS] = {};
+	uint64_t* results[NUM_OF_OPTIMIZATIONS] = {}; /* Store the outputs of optimizations */
+	uint64_t* references[NUM_OF_OPTIMIZATIONS] = {};
 	double  times[NUM_OF_OPTIMIZATIONS] = {}; /* Store the time measurement of optimizations */
 	int  errors[NUM_OF_OPTIMIZATIONS] = {}; /* Store whether the optimization has the correct result */
 
-	void (*functions[NUM_OF_OPTIMIZATIONS])(double*, const double*, const double*) ={ /* The optimization functions */
-		 naive,
-		 openmp,
-		 simd,
-		 cacheBlock,
-		 loopUnroll,
-		 registerBlock,
-		 openmp_simd,
-		 openmp_simd_cacheBlock,
-		 openmp_simd_cacheBlock_loopUnroll,
-		 openmp_simd_cacheBlock_loopUnroll_registerBlock};
+	void (*functions[NUM_OF_OPTIMIZATIONS])(uint64_t*, const uint16_t*, const uint16_t*) ={ /* The optimization functions */
+		 naive,};
+		 //openmp,
+		 //simd,
+		 //cacheBlock,
+		 //loopUnroll,
+		 //registerBlock,
+		 //openmp_simd,
+		 //openmp_simd_cacheBlock,
+		 //openmp_simd_cacheBlock_loopUnroll,
+		 //openmp_simd_cacheBlock_loopUnroll_registerBlock};
 
 	const char*   names[NUM_OF_OPTIMIZATIONS] ={ /* optimization names */
 		 "naive",
@@ -63,7 +63,8 @@ int main(int argc, char *argv[])
 		 "openmp & simd & cache block & loop unroll & register block"};
 
 	const int enables[NUM_OF_OPTIMIZATIONS] = { /* whether or not enable the test of some optimizations */
-		 ENABLE,
+		 ENABLE,};
+		 /*
 		 ENABLE,
 		 ENABLE,
 		 ENABLE,
@@ -72,23 +73,30 @@ int main(int argc, char *argv[])
 	     ENABLE,
 		 ENABLE,
 		 ENABLE,
-		 ENABLE};
+		 ENABLE};*/
 
 	/* Do multiple experiments. Measure the average runtime. */
 	const int NUM_OF_EXPERIMENTS = 1;
 
 	for (int i = 0; i < NUM_OF_EXPERIMENTS; i++) {
 
-		for (int j = 0; j < NUM_OF_OPTIMIZATIONS; j++) {
+		for (int j = 0; j < 1; j++) {
 			if (enables[j]) {
-				matrix1s[j] = _mm_malloc(WIDTH*HEIGHT*sizeof(double), 64);
-				matrix2s[j] = _mm_malloc(WIDTH*HEIGHT*sizeof(double), 64);
-				for (int k = 0; k < WIDTH*HEIGHT; k++) {
-					matrix1s[j][k] = rand()/((double)RAND_MAX);
-					matrix2s[j][k] = rand()/((double)RAND_MAX);
+				matrix1s[j] = _mm_malloc(WIDTH1*HEIGHT1*sizeof(uint16_t), 64);
+				matrix2s[j] = _mm_malloc((WIDTH2*HEIGHT2+PAD)*sizeof(uint16_t), 64);
+				for (int i = 0; i < PAD; i++) {
+					matrix2s[j][i] = 0;
 				}
-				results[j] = _mm_malloc(WIDTH*HEIGHT*sizeof(double), 64);
-				references[j] = _mm_malloc(WIDTH*HEIGHT*sizeof(double), 64);
+				matrix2s[j] += PAD;
+				for (int k = 0; k < WIDTH1*HEIGHT1; k++) {
+					matrix1s[j][k] = rand()%32768;
+				}
+
+				for (int k = 0; k < WIDTH2*HEIGHT2; k++) {
+					matrix2s[j][k] = rand()%32768;
+				}
+				results[j] = _mm_malloc(WIDTH2*HEIGHT2*sizeof(uint64_t), 64);
+				references[j] = _mm_malloc(WIDTH2*HEIGHT2*sizeof(uint64_t), 64);
 				uint64_t start = timestamp_us();
 				functions[j](results[j], matrix1s[j], matrix2s[j]);
 				times[j] += (timestamp_us() - start) / 1000000.0 / NUM_OF_EXPERIMENTS;
@@ -97,7 +105,7 @@ int main(int argc, char *argv[])
 					errors[j] = compare_matrix(results[j], references[j]);
 				}
 				_mm_free(matrix1s[j]);
-				_mm_free(matrix2s[j]);
+				_mm_free(matrix2s[j]-PAD);
 				_mm_free(results[j]);
 				_mm_free(references[j]);
 			}
