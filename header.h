@@ -16,7 +16,6 @@
 #define WIDTH2 1024
 #define HEIGHT2 1024
 
-
 #define LINE_SIZE 64
 #define L1_SIZE (32*1024)
 #define L2_SIZE (256*1024)
