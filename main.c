@@ -4,7 +4,7 @@
  Author      : Jason Su and Harry He
  Version     : 1.0.0
  Copyright   : GNU
- Description : 1024*1024 double-precision matrix multliplication
+ Description : 7*7 1024*1024 2-D non-separable convolution
  ============================================================================
  */
 #include <omp.h>
