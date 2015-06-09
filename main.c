@@ -42,7 +42,9 @@ int main(int argc, char *argv[])
 		 naive,
 		 openmp,
 		 simd,
-		 cacheBlock};
+		 cacheBlock,
+		 loopUnroll,
+		 registerBlock};
 		 //simd,
 		 //cacheBlock,
 		 //loopUnroll,
@@ -65,7 +67,7 @@ int main(int argc, char *argv[])
 		 "openmp & simd & cache block & loop unroll & register block"};
 
 	const int enables[NUM_OF_OPTIMIZATIONS] = { /* whether or not enable the test of some optimizations */
-		 ENABLE,ENABLE,ENABLE, ENABLE};
+		 ENABLE,ENABLE,ENABLE, ENABLE, ENABLE, ENABLE};
 		 /*
 		 ENABLE,
 		 ENABLE,
@@ -82,20 +84,20 @@ int main(int argc, char *argv[])
 
 	for (int i = 0; i < NUM_OF_EXPERIMENTS; i++) {
 
-		for (int j = 0; j < 4; j++) {
+		for (int j = 0; j < 6; j++) {
 			if (enables[j]) {
 				matrix1s[j] = _mm_malloc(WIDTH1*HEIGHT1*sizeof(uint16_t), 64);
-				matrix2s[j] = _mm_malloc((WIDTH2*HEIGHT2+PAD)*sizeof(uint16_t), 64);
+				matrix2s[j] = _mm_malloc((WIDTH2*HEIGHT2+2*PAD)*sizeof(uint16_t), 64);
 				for (int i = 0; i < PAD; i++) {
 					matrix2s[j][i] = 0;
 				}
 				matrix2s[j] += PAD;
 				for (int k = 0; k < WIDTH1*HEIGHT1; k++) {
-					matrix1s[j][k] = rand()%32768;
+					matrix1s[j][k] = rand()%65535;
 				}
 
 				for (int k = 0; k < WIDTH2*HEIGHT2; k++) {
-					matrix2s[j][k] = rand()%32768;
+					matrix2s[j][k] = rand()%65535;
 				}
 				results[j] = _mm_malloc(WIDTH2*HEIGHT2*sizeof(uint64_t), 64);
 				references[j] = _mm_malloc(WIDTH2*HEIGHT2*sizeof(uint64_t), 64);
