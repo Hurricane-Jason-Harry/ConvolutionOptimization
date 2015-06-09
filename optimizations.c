@@ -130,8 +130,8 @@ void loopUnroll(uint64_t* restrict result,
             for (int n = 0; n < HEIGHT1; n++)
             {
                 uint64_t t = matrix1[m*WIDTH1+n];
-                const uint64_t mat2 = matrix2 + （i-m)*WIDTH2 - n
-                for (int j = 0; j < HEIGHT2; j+＝32)
+                const uint16_t* mat2 = matrix2 + (i-m)*WIDTH2-n;
+                for (int j = 0; j < HEIGHT2; j+=32)
                 {
                     dest[j] += t*mat2[j];
                     dest[j+1] += t*mat2[j+1];
