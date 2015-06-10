@@ -43,24 +43,9 @@ void openmp(uint64_t* restrict result,
 }
 
 
-
+/*
 void simd(uint64_t* restrict result,
 		const uint16_t* restrict matrix1, const uint16_t* restrict matrix2) {
-	memset(result, 0, WIDTH2*HEIGHT2*sizeof(uint64_t));
-	/*
-	for (int i = 0; i < WIDTH; i++)
-	{
-		for (int k = 0; k < WIDTH; k++)
-		{
-			__m256d t = _mm256_broadcast_sd(matrix1+i*WIDTH+k);
-			for (int j = 0; j < HEIGHT; j+=4)
-			{
-				__m256d r = _mm256_load_pd(result+i*WIDTH+j);
-				r = _mm256_fmadd_pd(_mm256_load_pd(matrix2+k*WIDTH+j), t, r);
-				_mm256_store_pd(result+i*WIDTH+j, r);
-			}
-		}
-	}*/
 	memset(result, 0, WIDTH2*HEIGHT2*sizeof(uint64_t));
 	for (int i = 0; i < WIDTH2; i++)
 	{
@@ -93,7 +78,32 @@ void simd(uint64_t* restrict result,
 		}
 	}
 }
+*/
 
+
+void simd(uint64_t* restrict result,
+		const uint16_t* restrict matrix1, const uint16_t* restrict matrix2) {
+	memset(result, 0, WIDTH2*HEIGHT2*sizeof(uint64_t));
+	for (int i = 0; i < WIDTH2; i++)
+	{
+		for (int m = 0; m < WIDTH1; m++)
+		{
+            for (int n = 0; n < HEIGHT1; n++)
+            {
+                __m256i m1 = _mm256_set1_epi32(((uint32_t)(matrix1[m*(WIDTH1+PAD1)+n])));
+                for (int j = 0; j < HEIGHT2; j+=4)
+                {
+                	__m256i r = _mm256_loadu_si256((__m256i*)(result+i*WIDTH2+j));
+                	__m256i m2 = _mm256_loadu_si256((__m256i*)(matrix2+(i-m)*WIDTH2+j-n));
+                	m2 = _mm256_cvtepu16_epi32(_mm256_extracti128_si256(m2, 0));
+                	m2 = _mm256_mullo_epi32(m1, m2);
+                	r = _mm256_add_epi64(r, _mm256_cvtepu32_epi64(_mm256_extracti128_si256(m2, 0)));
+                	_mm256_storeu_si256((__m256i*)(result+i*WIDTH2+j), r);
+                }
+            }
+		}
+	}
+}
 
 
 void cacheBlock(uint64_t* restrict result,
