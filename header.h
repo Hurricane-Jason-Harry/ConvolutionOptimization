@@ -10,8 +10,8 @@
 
 #define PAD (8*1024)
 
-#define WIDTH1 8
-#define HEIGHT1 8
+#define WIDTH1 7
+#define HEIGHT1 7
 #define PAD1    1
 
 #define WIDTH2 1024

@@ -10,7 +10,7 @@ void naive(uint64_t* restrict result,
 		{
             for (int n = 0; n < HEIGHT1; n++)
             {
-                uint64_t t = matrix1[m*WIDTH1+n];
+                uint64_t t = matrix1[m*(WIDTH1+PAD1)+n];
                 for (int j = 0; j < HEIGHT2; j++)
                 {
                     result[i*WIDTH2+j] += t*matrix2[(i-m)*WIDTH2+(j-n)];
@@ -32,7 +32,7 @@ void openmp(uint64_t* restrict result,
 		{
             for (int n = 0; n < HEIGHT1; n++)
             {
-                uint64_t t = matrix1[m*WIDTH1+n];
+                uint64_t t = matrix1[m*(WIDTH1+PAD1)+n];
                 for (int j = 0; j < HEIGHT2; j++)
                 {
                     result[i*WIDTH2+j] += t*matrix2[(i-m)*WIDTH2+(j-n)];
@@ -68,7 +68,7 @@ void simd(uint64_t* restrict result,
 		{
             for (int n = 0; n < HEIGHT1; n++)
             {
-                __m256i m1 = _mm256_set1_epi32(((uint32_t)(matrix1[m*WIDTH1+n])));
+                __m256i m1 = _mm256_set1_epi32(((uint32_t)(matrix1[m*(WIDTH1+PAD1)+n])));
                 for (int j = 0; j < HEIGHT2; j+=16)
                 {
                 	__m256i r0 = _mm256_loadu_si256((__m256i*)(result+i*WIDTH2+j));
@@ -107,7 +107,7 @@ void cacheBlock(uint64_t* restrict result,
 			{
 	            for (int n = 0; n < HEIGHT1; n++)
 	            {
-	                uint64_t t = matrix1[m*WIDTH1+n];
+	                uint64_t t = matrix1[m*(WIDTH1+PAD1)+n];
 	                for (int j = jj; j < jj+BLOCK; j++)
 	                {
 	                    result[i*WIDTH2+j] += t*matrix2[(i-m)*WIDTH2+(j-n)];
@@ -129,14 +129,10 @@ void loopUnroll(uint64_t* restrict result,
 		{
             for (int n = 0; n < HEIGHT1; n++)
             {
-                uint64_t t = matrix1[m*WIDTH1+n];
-<<<<<<< HEAD
-                const uint64_t mat2 = matrix2 +(i-m)*WIDTH2 - n
-                for (int j = 0; j < HEIGHT2; j+＝32)
-=======
+                uint64_t t = matrix1[m*(WIDTH1+PAD1)+n];
+
                 const uint16_t* mat2 = matrix2 + (i-m)*WIDTH2-n;
                 for (int j = 0; j < HEIGHT2; j+=32)
->>>>>>> 6a859cdf3ecd3baea2dd2a2bae8b8930cbc819ad
                 {
                     dest[j] += t*mat2[j];
                     dest[j+1] += t*mat2[j+1];
@@ -186,10 +182,10 @@ void registerBlock(uint64_t* restrict result,
 		{
             for (int n = 0; n < HEIGHT1; n+=4)
             {
-                uint64_t m1_0 = matrix1[m*WIDTH1+n];
-                uint64_t m1_1 = matrix1[m*WIDTH1+n+1];
-                uint64_t m1_2 = matrix1[m*WIDTH1+n+2];
-                uint64_t m1_3 = matrix1[m*WIDTH1+n+3];
+                uint64_t m1_0 = matrix1[m*(WIDTH1+PAD1)+n];
+                uint64_t m1_1 = matrix1[m*(WIDTH1+PAD1)+n+1];
+                uint64_t m1_2 = matrix1[m*(WIDTH1+PAD1)+n+2];
+                uint64_t m1_3 = matrix1[m*(WIDTH1+PAD1)+n+3];
                 for (int j = 0; j < HEIGHT2; j+=4)
                 {
                 	uint64_t m2__3 = matrix2[(i-m)*WIDTH2+(j-n)-3];
@@ -246,6 +242,7 @@ void openmp_simd(uint64_t* restrict result,
     }
 }
 
+/*
 void openmp_simd_loopUnroll(uint64_t* restrict result,
 		const uint16_t* restrict matrix1, const uint16_t* restrict matrix2) {
 
