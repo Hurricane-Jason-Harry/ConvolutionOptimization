@@ -93,7 +93,10 @@ int main(int argc, char *argv[])
 				}
 				matrix2s[j] += PAD;
 				for (int k = 0; k < WIDTH1*HEIGHT1; k++) {
-					matrix1s[j][k] = rand()%65535;
+					if (j < WIDTH1-PAD1 && k < WIDTH2-PAD1)
+						matrix1s[j][k] = rand()%65535;
+					else
+						matrix1s[j][k] = 0;
 				}
 
 				for (int k = 0; k < WIDTH2*HEIGHT2; k++) {

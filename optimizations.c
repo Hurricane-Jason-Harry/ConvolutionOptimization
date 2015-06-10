@@ -130,8 +130,13 @@ void loopUnroll(uint64_t* restrict result,
             for (int n = 0; n < HEIGHT1; n++)
             {
                 uint64_t t = matrix1[m*WIDTH1+n];
+<<<<<<< HEAD
                 const uint64_t mat2 = matrix2 +(i-m)*WIDTH2 - n
                 for (int j = 0; j < HEIGHT2; j+＝32)
+=======
+                const uint16_t* mat2 = matrix2 + (i-m)*WIDTH2-n;
+                for (int j = 0; j < HEIGHT2; j+=32)
+>>>>>>> 6a859cdf3ecd3baea2dd2a2bae8b8930cbc819ad
                 {
                     dest[j] += t*mat2[j];
                     dest[j+1] += t*mat2[j+1];
@@ -179,12 +184,25 @@ void registerBlock(uint64_t* restrict result,
 	{
 		for (int m = 0; m < WIDTH1; m++)
 		{
-            for (int n = 0; n < HEIGHT1; n++)
+            for (int n = 0; n < HEIGHT1; n+=4)
             {
-                uint64_t t = matrix1[m*WIDTH1+n];
-                for (int j = 0; j < HEIGHT2; j++)
+                uint64_t m1_0 = matrix1[m*WIDTH1+n];
+                uint64_t m1_1 = matrix1[m*WIDTH1+n+1];
+                uint64_t m1_2 = matrix1[m*WIDTH1+n+2];
+                uint64_t m1_3 = matrix1[m*WIDTH1+n+3];
+                for (int j = 0; j < HEIGHT2; j+=4)
                 {
-                    result[i*WIDTH2+j] += t*matrix2[(i-m)*WIDTH2+(j-n)];
+                	uint64_t m2__3 = matrix2[(i-m)*WIDTH2+(j-n)-3];
+                	uint64_t m2__2 = matrix2[(i-m)*WIDTH2+(j-n)-2];
+                	uint64_t m2__1 = matrix2[(i-m)*WIDTH2+(j-n)-1];
+                	uint64_t m2_0  = matrix2[(i-m)*WIDTH2+(j-n)+0];
+                	uint64_t m2_1  = matrix2[(i-m)*WIDTH2+(j-n)+1];
+                	uint64_t m2_2  = matrix2[(i-m)*WIDTH2+(j-n)+2];
+                	uint64_t m2_3  = matrix2[(i-m)*WIDTH2+(j-n)+3];
+                    result[i*WIDTH2+j]   += m1_0*m2_0 + m1_1*m2__1 + m1_2*m2__2 + m1_3*m2__3;
+                    result[i*WIDTH2+j+1] += m1_0*m2_1 + m1_1*m2_0  + m1_2*m2__1 + m1_3*m2__2;
+                    result[i*WIDTH2+j+2] += m1_0*m2_2 + m1_1*m2_1  + m1_2*m2_0  + m1_3*m2__1;
+                    result[i*WIDTH2+j+3] += m1_0*m2_3 + m1_1*m2_2  + m1_2*m2_1  + m1_3*m2_0 ;
                 }
             }
 		}
