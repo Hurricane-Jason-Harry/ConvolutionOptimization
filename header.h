@@ -23,7 +23,7 @@
 #define L3_SIZE (6144*1024)
 #define L4_SIZE (131072*1024)
 
-#define NUM_OF_OPTIMIZATIONS 10
+#define NUM_OF_OPTIMIZATIONS 9
 
 
 extern int compare_matrix(const uint64_t* sample, const uint64_t* reference);
@@ -52,7 +52,7 @@ extern void openmp_simd(uint64_t* restrict result,
 extern void openmp_simd_loopUnroll(uint64_t* restrict result,
 		const uint16_t* restrict matrix1, const uint16_t* restrict matrix2);
 
-//extern void openmp_simd_loopUnroll_registerBlock(uint64_t* restrict result,
-//		const uint16_t* restrict matrix1, const uint16_t* restrict matrix2);
+extern void openmp_simd_loopUnroll_registerBlock(uint64_t* restrict result,
+		const uint16_t* restrict matrix1, const uint16_t* restrict matrix2);
 
 #endif
