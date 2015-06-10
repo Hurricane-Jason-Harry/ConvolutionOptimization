@@ -45,7 +45,8 @@ int main(int argc, char *argv[])
 		 cacheBlock,
 		 loopUnroll,
 		 registerBlock,
-		 openmp_simd};
+		 openmp_simd,
+		 openmp_simd_loopUnroll};
 		 //simd,
 		 //cacheBlock,
 		 //loopUnroll,
@@ -63,12 +64,11 @@ int main(int argc, char *argv[])
 		 "loop unroll",
 		 "register block",
 		 "openmp & simd",
-		 "openmp & simd & cache block",
-		 "openmp & simd & cache block & loop unroll",
-		 "openmp & simd & cache block & loop unroll & register block"};
+		 "openmp & simd & loop unroll",
+		 "openmp & simd & loop unroll & register block"};
 
 	const int enables[NUM_OF_OPTIMIZATIONS] = { /* whether or not enable the test of some optimizations */
-		 ENABLE,ENABLE,ENABLE, ENABLE, ENABLE, ENABLE, ENABLE};
+		 ENABLE,ENABLE,ENABLE, ENABLE, ENABLE, ENABLE, ENABLE, ENABLE};
 		 /*
 		 ENABLE,
 		 ENABLE,
@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
 
 	for (int i = 0; i < NUM_OF_EXPERIMENTS; i++) {
 
-		for (int j = 0; j < 7; j++) {
+		for (int j = 0; j < 8; j++) {
 			if (enables[j]) {
 				matrix1s[j] = _mm_malloc((WIDTH1+PAD1)*(HEIGHT1+PAD1)*sizeof(uint16_t), 64);
 				matrix2s[j] = _mm_malloc((WIDTH2*HEIGHT2+2*PAD)*sizeof(uint16_t), 64);

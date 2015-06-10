@@ -49,13 +49,10 @@ extern void registerBlock(uint64_t* restrict result,
 extern void openmp_simd(uint64_t* restrict result,
 		const uint16_t* restrict matrix1, const uint16_t* restrict matrix2);
 
-extern void openmp_simd_cacheBlock(uint64_t* restrict result,
+extern void openmp_simd_loopUnroll(uint64_t* restrict result,
 		const uint16_t* restrict matrix1, const uint16_t* restrict matrix2);
 
-extern void openmp_simd_cacheBlock_loopUnroll(uint64_t* restrict result,
-		const uint16_t* restrict matrix1, const uint16_t* restrict matrix2);
-
-extern void openmp_simd_cacheBlock_loopUnroll_registerBlock(uint64_t* restrict result,
-		const uint16_t* restrict matrix1, const uint16_t* restrict matrix2);
+//extern void openmp_simd_loopUnroll_registerBlock(uint64_t* restrict result,
+//		const uint16_t* restrict matrix1, const uint16_t* restrict matrix2);
 
 #endif

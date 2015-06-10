@@ -241,65 +241,63 @@ void openmp_simd(uint64_t* restrict result,
     }
 }
 
-/*
+
 void openmp_simd_loopUnroll(uint64_t* restrict result,
 		const uint16_t* restrict matrix1, const uint16_t* restrict matrix2) {
+    memset(result, 0, WIDTH2*HEIGHT2*sizeof(uint64_t));
+    #pragma omp parallel for
+    for (int i = 0; i < WIDTH2; i++)
+    {
+        for (int m = 0; m < WIDTH1; m++)
+        {
+            for (int n = 0; n < HEIGHT1; n++)
+            {
+                __m256i m1 = _mm256_set1_epi32(((uint32_t)(matrix1[m*(WIDTH1+PAD1)+n])));
+                for (int j = 0; j < HEIGHT2; j+=32)
+                {
+                	__m256i r0 = _mm256_loadu_si256((__m256i*)(result+i*WIDTH2+j));
+                	__m256i r1 = _mm256_loadu_si256((__m256i*)(result+i*WIDTH2+j+4));
+                	__m256i r2 = _mm256_loadu_si256((__m256i*)(result+i*WIDTH2+j+8));
+                	__m256i r3 = _mm256_loadu_si256((__m256i*)(result+i*WIDTH2+j+12));
+                	__m256i m2 = _mm256_loadu_si256((__m256i*)(matrix2+(i-m)*WIDTH2+j-n));
+                	__m256i m2_0 = _mm256_cvtepu16_epi32(_mm256_extracti128_si256(m2, 0));
+                	__m256i m2_1 = _mm256_cvtepu16_epi32(_mm256_extracti128_si256(m2, 1));
+                	m2_0 = _mm256_mullo_epi32(m1, m2_0);
+                	m2_1 = _mm256_mullo_epi32(m1, m2_1);
+                	r0 = _mm256_add_epi64(r0, _mm256_cvtepu32_epi64(_mm256_extracti128_si256(m2_0, 0)));
+                	r1 = _mm256_add_epi64(r1, _mm256_cvtepu32_epi64(_mm256_extracti128_si256(m2_0, 1)));
+                	r2 = _mm256_add_epi64(r2, _mm256_cvtepu32_epi64(_mm256_extracti128_si256(m2_1, 0)));
+                	r3 = _mm256_add_epi64(r3, _mm256_cvtepu32_epi64(_mm256_extracti128_si256(m2_1, 1)));
+                	_mm256_storeu_si256((__m256i*)(result+i*WIDTH2+j), r0);
+                	_mm256_storeu_si256((__m256i*)(result+i*WIDTH2+j+4), r1);
+                	_mm256_storeu_si256((__m256i*)(result+i*WIDTH2+j+8), r2);
+                	_mm256_storeu_si256((__m256i*)(result+i*WIDTH2+j+12), r3);
 
-	const int BLOCK = 512;
-	memset(result, 0, WIDTH2*HEIGHT2*sizeof(uint64_t));
 
-	#pragma omp parallel
-	{
-		for (int kk = 0; kk < WIDTH; kk += BLOCK) {
-			#pragma omp for
-			for (int i = 0; i < WIDTH; i++)
-			{
-				for (int k = kk; k < kk+BLOCK; k++)
-				{
-					__m256d t = _mm256_broadcast_sd(matrix1+i*WIDTH+k);
-					for (int j = 0; j < HEIGHT; j+=32)
-					{
-						double* dest = result+i*WIDTH+j;
-						const double* mat2 = matrix2+k*WIDTH+j;
-						__m256d r;
-						r = _mm256_load_pd(dest);
-						r = _mm256_fmadd_pd(_mm256_load_pd(mat2), t, r);
-						_mm256_store_pd(dest, r);
-
-						r = _mm256_load_pd(dest+4);
-						r = _mm256_fmadd_pd(_mm256_load_pd(mat2+4), t, r);
-						_mm256_store_pd(dest+4, r);
-
-						r = _mm256_load_pd(dest+8);
-						r = _mm256_fmadd_pd(_mm256_load_pd(mat2+8), t, r);
-						_mm256_store_pd(dest+8, r);
-
-						r = _mm256_load_pd(dest+12);
-						r = _mm256_fmadd_pd(_mm256_load_pd(mat2+12), t, r);
-						_mm256_store_pd(dest+12, r);
-
-						r = _mm256_load_pd(dest+16);
-						r = _mm256_fmadd_pd(_mm256_load_pd(mat2+16), t, r);
-						_mm256_store_pd(dest+16, r);
-
-						r = _mm256_load_pd(dest+20);
-						r = _mm256_fmadd_pd(_mm256_load_pd(mat2+20), t, r);
-						_mm256_store_pd(dest+20, r);
-
-						r = _mm256_load_pd(dest+24);
-						r = _mm256_fmadd_pd(_mm256_load_pd(mat2+24), t, r);
-						_mm256_store_pd(dest+24, r);
-
-						r = _mm256_load_pd(dest+28);
-						r = _mm256_fmadd_pd(_mm256_load_pd(mat2+28), t, r);
-						_mm256_store_pd(dest+28, r);
-					}
-				}
-			}
-		}
-	}
+                	r0 = _mm256_loadu_si256((__m256i*)(result+i*WIDTH2+j+16));
+                	r1 = _mm256_loadu_si256((__m256i*)(result+i*WIDTH2+j+20));
+                	r2 = _mm256_loadu_si256((__m256i*)(result+i*WIDTH2+j+24));
+                	r3 = _mm256_loadu_si256((__m256i*)(result+i*WIDTH2+j+28));
+                	m2 = _mm256_loadu_si256((__m256i*)(matrix2+(i-m)*WIDTH2+j-n+16));
+                	m2_0 = _mm256_cvtepu16_epi32(_mm256_extracti128_si256(m2, 0));
+                	m2_1 = _mm256_cvtepu16_epi32(_mm256_extracti128_si256(m2, 1));
+                	m2_0 = _mm256_mullo_epi32(m1, m2_0);
+                	m2_1 = _mm256_mullo_epi32(m1, m2_1);
+                	r0 = _mm256_add_epi64(r0, _mm256_cvtepu32_epi64(_mm256_extracti128_si256(m2_0, 0)));
+                	r1 = _mm256_add_epi64(r1, _mm256_cvtepu32_epi64(_mm256_extracti128_si256(m2_0, 1)));
+                	r2 = _mm256_add_epi64(r2, _mm256_cvtepu32_epi64(_mm256_extracti128_si256(m2_1, 0)));
+                	r3 = _mm256_add_epi64(r3, _mm256_cvtepu32_epi64(_mm256_extracti128_si256(m2_1, 1)));
+                	_mm256_storeu_si256((__m256i*)(result+i*WIDTH2+j+16), r0);
+                	_mm256_storeu_si256((__m256i*)(result+i*WIDTH2+j+20), r1);
+                	_mm256_storeu_si256((__m256i*)(result+i*WIDTH2+j+24), r2);
+                	_mm256_storeu_si256((__m256i*)(result+i*WIDTH2+j+28), r3);
+                }
+            }
+        }
+    }
 }
 
+/*
 void openmp_simd_cacheBlock_loopUnroll_registerBlock(uint64_t* restrict result,
 		const uint16_t* restrict matrix1, const uint16_t* restrict matrix2) {
 
