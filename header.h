@@ -12,7 +12,6 @@
 
 #define WIDTH1 7
 #define HEIGHT1 7
-#define PAD1    1
 
 #define WIDTH2 1024
 #define HEIGHT2 1024

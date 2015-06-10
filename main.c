@@ -80,17 +80,14 @@ int main(int argc, char *argv[])
 
 		for (int j = 0; j < NUM_OF_OPTIMIZATIONS; j++) {
 			if (enables[j]) {
-				matrix1s[j] = _mm_malloc((WIDTH1+PAD1)*(HEIGHT1+PAD1)*sizeof(uint16_t), 64);
+				matrix1s[j] = _mm_malloc(WIDTH1*HEIGHT1*sizeof(uint16_t), 64);
 				matrix2s[j] = _mm_malloc((WIDTH2*HEIGHT2+2*PAD)*sizeof(uint16_t), 64);
 				for (int i = 0; i < PAD; i++) {
 					matrix2s[j][i] = 0;
 				}
 				matrix2s[j] += PAD;
-				for (int k = 0; k < (WIDTH1+PAD1)*(HEIGHT1+PAD1); k++) {
-					if (k/(WIDTH1+PAD1) < WIDTH1 && k%(HEIGHT1+PAD1) < HEIGHT1)
+				for (int k = 0; k < WIDTH1*HEIGHT1; k++) {
 						matrix1s[j][k] = rand()%65535;
-					else
-						matrix1s[j][k] = 0;
 				}
 
 				for (int k = 0; k < WIDTH2*HEIGHT2; k++) {
