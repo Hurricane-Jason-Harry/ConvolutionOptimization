@@ -445,6 +445,7 @@ void openmp_simd_loopUnroll_registerBlock(uint64_t* restrict result,
 				_mm256_storeu_si256((__m256i*)(result+i*WIDTH2+j+20), r1);
 				_mm256_storeu_si256((__m256i*)(result+i*WIDTH2+j+24), r2);
 				_mm256_storeu_si256((__m256i*)(result+i*WIDTH2+j+28), r3);
+
 			}
         }
     }

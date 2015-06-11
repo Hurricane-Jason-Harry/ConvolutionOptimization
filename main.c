@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
 		 ENABLE};*/
 
 	/* Do multiple experiments. Measure the average runtime. */
-	const int NUM_OF_EXPERIMENTS = 50;
+	const int NUM_OF_EXPERIMENTS = 100;
 
 	for (int i = 0; i < NUM_OF_EXPERIMENTS; i++) {
 
@@ -114,9 +114,9 @@ int main(int argc, char *argv[])
 		/* Output time measurement results */
 		if (enables[i]) {
 			if (!enables[0])
-				printf("%-65s:%.3f\n", names[i], times[i]);
+				printf("%-65s:%.5f\n", names[i], times[i]);
 			else
-				printf("%-65s:%.3f speedup: %.4f\n", names[i], times[i], times[0]/times[i]);
+				printf("%-65s:%.5f speedup: %.4f\n", names[i], times[i], times[0]/times[i]);
 		}
 
 		/* Error Handling */
