@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
 		 ENABLE};*/
 
 	/* Do multiple experiments. Measure the average runtime. */
-	const int NUM_OF_EXPERIMENTS = 100;
+	const int NUM_OF_EXPERIMENTS = 10;
 
 	for (int i = 0; i < NUM_OF_EXPERIMENTS; i++) {
 
@@ -99,7 +99,7 @@ int main(int argc, char *argv[])
 				functions[j](results[j], matrix1s[j], matrix2s[j]);
 				times[j] += (timestamp_us() - start) / 1000000.0 / NUM_OF_EXPERIMENTS;
 				if (i == 0) {
-					naive(references[j], matrix1s[j], matrix2s[j]);
+					reference(references[j], matrix1s[j], matrix2s[j]);
 					errors[j] = compare_matrix(results[j], references[j]);
 				}
 				_mm_free(matrix1s[j]);

@@ -27,6 +27,9 @@
 
 extern int compare_matrix(const uint64_t* sample, const uint64_t* reference);
 
+extern void reference(uint64_t* restrict result,
+		const uint16_t* restrict matrix1, const uint16_t* restrict matrix2);
+
 extern void naive(uint64_t* restrict result,
 		const uint16_t* restrict matrix1, const uint16_t* restrict matrix2);
 

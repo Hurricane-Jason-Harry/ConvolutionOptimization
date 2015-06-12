@@ -1,6 +1,25 @@
 #include "header.h"
 #include <stdio.h>
 
+void reference(uint64_t* restrict result,
+		const uint16_t* restrict matrix1, const uint16_t* restrict matrix2) {
+	memset(result, 0, WIDTH2*HEIGHT2*sizeof(uint64_t));
+	for (int i = 0; i < WIDTH2; i++)
+	{
+		for (int m = 0; m < WIDTH1; m++)
+		{
+            for (int n = 0; n < HEIGHT1; n++)
+            {
+                uint64_t t = matrix1[m*WIDTH1+n];
+                for (int j = 0; j < HEIGHT2; j++)
+                {
+                    result[i*WIDTH2+j] += t*matrix2[(i-m)*WIDTH2+(j-n)];
+                }
+            }
+		}
+	}
+}
+
 void naive(uint64_t* restrict result,
 		const uint16_t* restrict matrix1, const uint16_t* restrict matrix2) {
 	memset(result, 0, WIDTH2*HEIGHT2*sizeof(uint64_t));
