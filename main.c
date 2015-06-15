@@ -54,12 +54,12 @@ int main(int argc, char *argv[])
 		 "naive",
 		 "openmp",
 		 "simd",
-		 "cache block",
-		 "loop unroll",
-		 "register block",
-		 "openmp & simd",
-		 "openmp & simd & loop unroll",
-		 "openmp & simd & loop unroll & register block"};
+		 "cacheBlock",
+		 "loopUnroll",
+		 "registerBlock",
+		 "openmp&simd",
+		 "openmp&simd&loopUnroll",
+		 "openmp&simd&loopUnroll&registerBlock"};
 
 	int events[NUM_OF_EVENTS] = {PAPI_TOT_INS, PAPI_TOT_CYC, PAPI_BR_CN, PAPI_L1_DCM, PAPI_L3_TCM}; /* PAPI events */
 	const char* event_names[NUM_OF_EVENTS] = { /* PAPI event counters */
@@ -119,7 +119,7 @@ int main(int argc, char *argv[])
 	printf("Total Execution Time:\n");
 	for (int i = 0; i < NUM_OF_OPTIMIZATIONS; i++) {
 		/* Output time measurement results */
-		printf("%-45s:%.5f speedup: %.4f\n", names[i], times[i], times[0]/times[i]);
+		printf("%-40s:%.5f speedup: %.4f\n", names[i], times[i], times[0]/times[i]);
 
 		/* Error Handling */
 		if (errors[i]) {
@@ -132,7 +132,7 @@ int main(int argc, char *argv[])
 	for (int i = 0; i < NUM_OF_EVENTS; i++) {
 		printf("%s:\n", event_names[i]);
 		for (int j = 0; j < NUM_OF_OPTIMIZATIONS; j++) {
-				printf("%-45s:%9lld ratio: %.4f\n", names[j], event_values[i][j],
+				printf("%-40s:%9lld ratio: %.4f\n", names[j], event_values[i][j],
 						event_values[i][j] / (double)event_values[i][0]);
 		}
 		printf("\n");
