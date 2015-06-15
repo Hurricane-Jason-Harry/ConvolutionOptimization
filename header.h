@@ -24,6 +24,7 @@
 
 #define NUM_OF_OPTIMIZATIONS 9
 
+#define NUM_OF_EVENTS 5
 
 extern int compare_matrix(const uint64_t* sample, const uint64_t* reference);
 
