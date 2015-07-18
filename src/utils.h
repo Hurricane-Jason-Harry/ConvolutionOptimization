@@ -2,6 +2,7 @@
 #define MATRIX_UTILS_H
 
 #include <stdint.h>
+#include <sys/time.h>
 
 int compare_matrix(const uint64_t* sample, const uint64_t* reference);
 

@@ -7,14 +7,15 @@
  Description : 7*7 1024*1024 2-D non-separable convolution
  ============================================================================
  */
-#include <omp.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <stdint.h>
-#include <sys/time.h>
-#include <time.h>
+
+#ifdef __AVX2__
 #include <immintrin.h>
 #include <xmmintrin.h>
+#else
+#include "mm_malloc.h"
+#endif
 
 #include "config.h"
 #include "optimizations.h"
@@ -22,8 +23,6 @@
 
 int main(int argc, char *argv[])
 {
-	srand (time(NULL));
-
 	uint64_t* newimg = _mm_malloc(WIMAGE*HIMAGE*sizeof(uint64_t), 64);
 	uint64_t* newimg_ref = _mm_malloc(WIMAGE*HIMAGE*sizeof(uint64_t), 64);
 	uint16_t* filter = _mm_malloc(WFILTER*HFILTER*sizeof(uint16_t), 64);

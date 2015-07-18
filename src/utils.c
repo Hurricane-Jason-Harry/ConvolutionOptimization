@@ -1,8 +1,8 @@
-#include <stdlib.h>
 #include <stdio.h>
-#include "config.h"
 #include <math.h>
 #include <stdint.h>
+
+#include "config.h"
 
 /*
  * Compare two matrices. Return 0 if they are the same, 1 otherwise.
