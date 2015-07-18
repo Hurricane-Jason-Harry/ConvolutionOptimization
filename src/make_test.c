@@ -43,7 +43,7 @@ int main(int argc, char **argv) {
                 uint64_t scalarF = filter[m*WFILTER+n];
                 for (int j = 0; j < himage; j++)
                 {
-                    newimg[i*WIMAGE+j] += scalarF*image[(i-m)*WIMAGE+(j-n)];
+                    newimg[i*WIMAGE+j] += scalarF*image[OFFSET+(i-m)*WIMAGE+(j-n)];
                 }
             }
 		}

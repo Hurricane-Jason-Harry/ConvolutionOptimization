@@ -11,6 +11,8 @@
 
 #define X86_VECTOR_LENGTH 4
 
+#define OFFSET (((HFILTER-1)/2)*WIMAGE+(HFILTER-1)/2)
+
 #define TEST_FILENAME "test/test.out"
 
 #endif

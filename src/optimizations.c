@@ -44,7 +44,7 @@ void matconv_naive(uint64_t* restrict newimg,
                 uint64_t scalarFil = filter[k*WFILTER+l];
                 for (int j = 0; j < HIMAGE; j++)
                 {
-                    newimg[i*WIMAGE+j] += scalarFil*image[i*WIMAGE-k*WIMAGE+j-l];
+                    newimg[i*WIMAGE+j] += scalarFil*image[OFFSET+i*WIMAGE-k*WIMAGE+j-l];
                 }
             }
 		}
